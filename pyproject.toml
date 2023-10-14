@@ -6,7 +6,9 @@ authors = ["Summerkirakira <summerkirakira@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = ">=3.9,<3.13"
+pillow = "^10.0.1"
+numpy = "^1.26.0"
 
 
 [build-system]
