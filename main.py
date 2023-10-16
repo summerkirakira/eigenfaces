@@ -2,8 +2,11 @@ from pathlib import Path
 from PIL import Image
 import numpy as np
 from typing import Tuple
+import time
 
 dataset_path = Path("./dataset")
+
+start_time = time.time()
 
 
 def resize_image(image: Image) -> Image:
@@ -107,5 +110,7 @@ def test():
     print(f"Total error count: {error_count}. Error rate: {error_count / 200 * 100}%")
 
 
-test()
+if __name__ == '__main__':
+    test()
+    print(f"Time cost: {time.time() - start_time} seconds")
 
