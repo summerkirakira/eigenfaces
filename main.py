@@ -66,8 +66,6 @@ filtered_eigen_vectors = eigen_vectors[:, :200]
 
 projection_coefficients = mean_matrix @ filtered_eigen_vectors
 
-test_input = dataset_path / 's1' / '9.pgm'
-
 
 def get_coefficients_by_image(image: Image) -> np.ndarray:
     image_array = get_image_array(image)
@@ -81,6 +79,17 @@ def get_coefficients_distance(input_coefficients: np.ndarray) -> np.ndarray:
     return distance
 
 
+def vote_by_indices(distance: np.ndarray) -> str:
+    vote_dict = {}
+    for index in np.argsort(distance)[:2]:
+        label = labels[index]
+        if label in vote_dict:
+            vote_dict[label] += 1
+        else:
+            vote_dict[label] = 1
+    return max(vote_dict, key=vote_dict.get)
+
+
 def test():
     error_count = 0
     for subset in dataset_path.glob('*/'):
@@ -89,14 +98,14 @@ def test():
                 continue
             test_coefficients = get_coefficients_by_image(resize_image(Image.open(file)))
             result = get_coefficients_distance(test_coefficients)
-            sorted_result = np.argsort(result)
-            result_label = labels[sorted_result[0]]
+            result_label = vote_by_indices(result)
             if result_label == subset.name:
                 print(f"Test {subset.name} - {file.stem} success")
             else:
                 print(f"Test {subset.name} - {file.stem} failed")
                 error_count += 1
     print(f"Total error count: {error_count}. Error rate: {error_count / 200 * 100}%")
+
 
 test()
 
